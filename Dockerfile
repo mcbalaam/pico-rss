@@ -3,11 +3,11 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /app/go-rss .
+RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o /app/pico-rss .
 
 FROM alpine:3.20
 RUN apk --no-cache add ca-certificates && adduser -D -H appuser
-COPY --from=build /app/go-rss /app/go-rss
+COPY --from=build /app/pico-rss /app/pico-rss
 WORKDIR /app
 USER appuser
-ENTRYPOINT ["/app/go-rss"]
+ENTRYPOINT ["/app/pico-rss"]

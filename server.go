@@ -16,7 +16,7 @@ func writeFeed(w http.ResponseWriter, contentType, body string) {
 }
 
 // findNotePath resolves a URL slug to a .md file in dir.
-// Slug must match the filename without extension exactly.
+// Slug must match the filename without extension exactly
 func findNotePath(dir, slug string) (string, error) {
 	expanded, err := expandHome(dir)
 	if err != nil {

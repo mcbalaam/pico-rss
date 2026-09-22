@@ -1,5 +1,5 @@
 services:
-  go-rss:
+  pico-rss:
     build: .
     # NOTES_DIR must be an absolute host path, e.g. NOTES_DIR=/home/user/my-rss-notes
     volumes:
