@@ -41,7 +41,7 @@ pico-rss parses the `.md` files to generate the feed. Here's how to structure yo
 ```md
 # Hello, ants!    ⟸ this is the title of the post, should be <h1> (# header)
 22.09.2026    ⟸ this is the publishing date, should be dd.mm.yyyy
-Short teaser shown in readers as description.    ⟸ this is the description, should be under 200 symbols
+Short teaser shown in readers as description.    ⟸ this is the description, should be under 300 symbols
 
 Everything below is the full post body, rendered to HTML
 into `content:encoded`. **Bold** and *italic* work.
@@ -53,6 +53,7 @@ If those are unavailable, metadata is used as a fallback: file name as the title
 
 Available endpoints:
 - `GET /rss.xml`: application/rss+xml;
-- `GET /atom.xml`: appication/atom+xml;
-- `GET /feed.json`: aplication/feed+json;
-- `GET /`: auto-discovery.
+- `GET /atom.xml`: application/atom+xml;
+- `GET /feed.json`: application/feed+json;
+- `GET /{slug}`: full post as HTML, e.g. `GET /hello-ants` for `hello-ants.md`;
+- `GET /`: index with all posts and auto-discovery.
