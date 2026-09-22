@@ -1,6 +1,6 @@
 # pico-rss: an RSS server for ants
 
-pico-rss is a very minimal zero-dependency personal RSS feed server that serves `.md` files using [gorilla/feeds](https://github.com/gorilla/feeds) with a Dockerhub release at [mcbalaam/pico-rss](https://hub.docker.com/r/mcbalaam/pico-rss)
+pico-rss is a very minimal zero-dependency personal RSS feed server that serves Markdown files
 
 ## Running pico-rss
 
