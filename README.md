@@ -17,7 +17,6 @@ docker run -d --name pico-rss --restart unless-stopped \
   -v /home/user/rss-notes:/data:ro \
   -e RSS_TARGET_DIR=/data \
   -e RSS_HOST=0.0.0.0 \
-  -e RSS_PORT=8066 \
   -e RSS_ORIGIN_URL=https://rss.mcblm.xyz \
   -e RSS_AUTHOR_USERNAME=mcbalaam \
   -e RSS_TIMEOUT=10 \
@@ -30,8 +29,9 @@ docker run -d --name pico-rss --restart unless-stopped \
 - `RSS_ORIGIN_URL` is the URL used to host your feed;
 - `RSS_TARGET_DIR`: where will pico-rss look for the `.md` files;
 - `RSS_HOST`: for running pico-rss outside of containers on localhost or local network;
-- `RSS_PORT`: the used port;
 - `RSS_TIMEOUT`: how long will the server retry writing/reading for.
+
+Port is fixed to `8066` inside the container, change the host mapping in `compose.yml` (`"8066:8066"`) or `docker run -p` if needed.
 
 ## Using pico-rss
 ### Publishing

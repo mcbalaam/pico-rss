@@ -13,7 +13,8 @@ func main() {
 	mux := http.NewServeMux()
 	registerRoutes(mux, &config)
 
-	addr := fmt.Sprintf("%s:%d", config.Server.Host, config.Server.Port)
+	const port = 8066
+	addr := fmt.Sprintf("%s:%d", config.Server.Host, port)
 	srv := &http.Server{
 		Addr:         addr,
 		Handler:      mux,

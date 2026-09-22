@@ -19,7 +19,6 @@ type MasterConfig struct {
 
 type ServerConfig struct {
 	Host    string
-	Port    int
 	Timeout int
 }
 
@@ -31,7 +30,6 @@ func GetConfig() Config {
 	config.Master.OriginURL = "https://rss.example.com"
 	config.Master.TargetDir = "~/rss-notes"
 	config.Server.Host = "127.0.0.1"
-	config.Server.Port = 8066
 	config.Server.Timeout = 10
 
 	applyEnvOverrides(&config)
@@ -51,13 +49,6 @@ func applyEnvOverrides(config *Config) {
 	}
 	if v := os.Getenv("RSS_HOST"); v != "" {
 		config.Server.Host = v
-	}
-	if v := os.Getenv("RSS_PORT"); v != "" {
-		port, err := strconv.Atoi(v)
-		if err != nil || port <= 0 || port > 65535 {
-			log.Fatalf("invalid RSS_PORT %q: must be 1-65535", v)
-		}
-		config.Server.Port = port
 	}
 	if v := os.Getenv("RSS_TIMEOUT"); v != "" {
 		timeout, err := strconv.Atoi(v)

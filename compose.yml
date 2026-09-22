@@ -9,8 +9,7 @@ services:
       RSS_ORIGIN_URL: "${RSS_ORIGIN_URL}"
       RSS_TARGET_DIR: /data
       RSS_HOST: "0.0.0.0"
-      RSS_PORT: "${RSS_PORT}"
       RSS_TIMEOUT: "${RSS_TIMEOUT}"
     ports:
-      - "${RSS_PORT}:${RSS_PORT}"
+      - "8066:8066"
     restart: unless-stopped
