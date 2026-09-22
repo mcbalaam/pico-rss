@@ -13,8 +13,9 @@ func main() {
 	mux := http.NewServeMux()
 	registerRoutes(mux, &config)
 
+	const host = "0.0.0.0"
 	const port = 8066
-	addr := fmt.Sprintf("%s:%d", config.Server.Host, port)
+	addr := fmt.Sprintf("%s:%d", host, port)
 	srv := &http.Server{
 		Addr:         addr,
 		Handler:      mux,
@@ -22,6 +23,6 @@ func main() {
 		WriteTimeout: time.Duration(config.Server.Timeout) * time.Second,
 	}
 
-	log.Printf("serving RSS for %s on http://%s (dir=%s)", config.Master.AuthorUsername, addr, config.Master.TargetDir)
+	log.Printf("serving RSS for %s on http://%s (dir=%s)", config.Master.AuthorName, addr, config.Master.TargetDir)
 	log.Fatal(srv.ListenAndServe())
 }

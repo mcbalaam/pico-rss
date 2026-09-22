@@ -5,10 +5,12 @@ services:
     volumes:
       - "${NOTES_DIR}:/data:ro"
     environment:
-      RSS_AUTHOR_USERNAME: "${RSS_AUTHOR_USERNAME}"
+      RSS_AUTHOR_NAME: "${RSS_AUTHOR_NAME}"
+      RSS_AUTHOR_EMAIL: "${RSS_AUTHOR_EMAIL}"
       RSS_ORIGIN_URL: "${RSS_ORIGIN_URL}"
+      RSS_FEED_TITLE: "${RSS_FEED_TITLE}"
+      RSS_FEED_DESCRIPTION: "${RSS_FEED_DESCRIPTION}"
       RSS_TARGET_DIR: /data
-      RSS_HOST: "0.0.0.0"
       RSS_TIMEOUT: "${RSS_TIMEOUT}"
     ports:
       - "8066:8066"

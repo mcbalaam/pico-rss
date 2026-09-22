@@ -4,19 +4,42 @@ pico-rss is a very minimal personal RSS feed server that serves `.md` files usin
 
 ## Running pico-rss
 
-You can...
-- clone the project, reconfigure [compose.yml](https://github.com/mcbalaam/pico-rss/blob/master/compose.yml) and run `docker compose up -d`;
-- create and configure an `.env` file and  use the following `compose.yml` to pull the image from Dockerhub;
+### From source
+
+```sh
+git clone https://github.com/mcbalaam/pico-rss && cd pico-rss
+docker compose up -d --build
 ```
+
+### From Docker Hub with compose
+
+```yaml
 services:
   pico-rss:
     image: mcbalaam/pico-rss:latest
+    container_name: pico-rss
     ports:
-      - "${RSS_PORT:-8080}:8080"
+      - "8066:8066"
+    environment:
+      RSS_FEED_TITLE: "mcbalaam notes"
+      RSS_FEED_DESCRIPTION: "Notes by mcbalaam"
+      RSS_AUTHOR_NAME: "mcbalaam"
+      RSS_AUTHOR_EMAIL: "mcbalaam@example.com"
+      RSS_ORIGIN_URL: "https://rss.mcblm.xyz"
+      RSS_TARGET_DIR: /data
+      RSS_TIMEOUT: 10
     volumes:
-      - "${NOTES_DIR}:/data:ro"
+      - "/home/mcbalaam/rss-notes:/data:ro"
+    restart: unless-stopped
 ```
-- pull it directly from Dockerhub:
+
+```sh
+docker compose up -d
+```
+
+> Replace `/home/mcbalaam/rss-notes` with your notes dir. All configuration goes in `compose.yml`, but you can use `.env` if you prefer to.
+
+### From Docker Hub directly
 
 ```sh
 docker pull mcbalaam/pico-rss:latest
@@ -25,22 +48,24 @@ docker run -d --name pico-rss --restart unless-stopped \
   -p 8066:8066 \
   -v /home/user/rss-notes:/data:ro \
   -e RSS_TARGET_DIR=/data \
-  -e RSS_HOST=0.0.0.0 \
   -e RSS_ORIGIN_URL=https://rss.mcblm.xyz \
-  -e RSS_AUTHOR_USERNAME=mcbalaam \
+  -e RSS_FEED_TITLE="mcbalaam notes" \
+  -e RSS_FEED_DESCRIPTION="Notes by mcbalaam" \
+  -e RSS_AUTHOR_NAME=mcbalaam \
+  -e RSS_AUTHOR_EMAIL=mcbalaam@example.com \
   -e RSS_TIMEOUT=10 \
   mcbalaam/pico-rss:latest
 ```
 
 ## Configuring pico-rss
 
-- `RSS_AUTHOR_USERNAME` is what people will see as the author of all the posts served;
+- `RSS_FEED_TITLE`: feed title, fallback `"<author> notes"` (`author` from `RSS_AUTHOR_NAME`);
+- `RSS_FEED_DESCRIPTION`: feed description, fallback `"Notes by <author>"`;
+- `RSS_AUTHOR_NAME`: author name;
+- `RSS_AUTHOR_EMAIL`: author email, empty by default;
 - `RSS_ORIGIN_URL` is the URL used to host your feed;
-- `RSS_TARGET_DIR`: where will pico-rss look for the `.md` files;
-- `RSS_HOST`: for running pico-rss outside of containers on localhost or local network;
+- `RSS_TARGET_DIR`: where will pico-rss look for the `.md` files (`/data` inside container, mapped via `volumes`);
 - `RSS_TIMEOUT`: how long will the server retry writing/reading for.
-
-Port is fixed to `8066` inside the container, change the host mapping in `compose.yml` (`"8066:8066"`) or `docker run -p` if needed.
 
 ## Using pico-rss
 ### Publishing

@@ -9,5 +9,6 @@ FROM alpine:3.20
 RUN apk --no-cache add ca-certificates && adduser -D -H appuser
 COPY --from=build /app/pico-rss /app/pico-rss
 WORKDIR /app
+ENV RSS_TARGET_DIR=/data
 USER appuser
 ENTRYPOINT ["/app/pico-rss"]

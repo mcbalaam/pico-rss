@@ -82,8 +82,8 @@ func serveIndex(w http.ResponseWriter, r *http.Request, config *Config) {
 		`<li><a href="/atom.xml">Atom</a></li>`+
 		`<li><a href="/feed.json">JSON Feed</a></li>`+
 		`</ul>`,
-		html.EscapeString(config.Master.AuthorUsername),
-		html.EscapeString(config.Master.AuthorUsername))
+		html.EscapeString(config.Master.AuthorName),
+		html.EscapeString(config.Master.AuthorName))
 
 	items, err := CollectNotesFromDir(config.Master.TargetDir, config)
 	if err != nil || len(items) == 0 {

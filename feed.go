@@ -45,11 +45,16 @@ func CollectNotesFromDir(dir string, config *Config) ([]*feeds.Item, error) {
 func BuildFeed(config *Config, items []*feeds.Item) *feeds.Feed {
 	origin := strings.TrimRight(config.Master.OriginURL, "/")
 
+	author := &feeds.Author{Name: config.Master.AuthorName, Email: config.Master.AuthorEmail}
+	if author.Name == "" && author.Email == "" {
+		author = nil
+	}
+
 	feed := &feeds.Feed{
-		Title:       config.Master.AuthorUsername + " notes",
+		Title:       config.Master.FeedTitle,
 		Link:        &feeds.Link{Href: origin},
-		Description: "Notes by " + config.Master.AuthorUsername,
-		Author:      &feeds.Author{Name: config.Master.AuthorUsername},
+		Description: config.Master.FeedDescription,
+		Author:      author,
 		Created:     time.Now(),
 	}
 

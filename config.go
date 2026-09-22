@@ -12,34 +12,49 @@ type Config struct {
 }
 
 type MasterConfig struct {
-	AuthorUsername string
-	OriginURL      string
-	TargetDir      string
+	AuthorName      string
+	AuthorEmail     string
+	OriginURL       string
+	TargetDir       string
+	FeedTitle       string
+	FeedDescription string
 }
 
 type ServerConfig struct {
-	Host    string
 	Timeout int
 }
 
 func GetConfig() Config {
 	var config Config
 
-	// Defaults when ENV is empty
-	config.Master.AuthorUsername = "username"
+	// defaults when ENV is empty
+	config.Master.AuthorName = "username"
 	config.Master.OriginURL = "https://rss.example.com"
 	config.Master.TargetDir = "~/rss-notes"
-	config.Server.Host = "127.0.0.1"
+	config.Master.FeedTitle = ""
+	config.Master.FeedDescription = ""
+	config.Master.AuthorEmail = ""
 	config.Server.Timeout = 10
 
 	applyEnvOverrides(&config)
+
+	// feed title/description fallbacks
+	if config.Master.FeedTitle == "" {
+		config.Master.FeedTitle = config.Master.AuthorName + " notes"
+	}
+	if config.Master.FeedDescription == "" {
+		config.Master.FeedDescription = "Notes by " + config.Master.AuthorName
+	}
 
 	return config
 }
 
 func applyEnvOverrides(config *Config) {
-	if v := os.Getenv("RSS_AUTHOR_USERNAME"); v != "" {
-		config.Master.AuthorUsername = v
+	if v := os.Getenv("RSS_AUTHOR_NAME"); v != "" {
+		config.Master.AuthorName = v
+	}
+	if v := os.Getenv("RSS_AUTHOR_EMAIL"); v != "" {
+		config.Master.AuthorEmail = v
 	}
 	if v := os.Getenv("RSS_ORIGIN_URL"); v != "" {
 		config.Master.OriginURL = v
@@ -47,8 +62,11 @@ func applyEnvOverrides(config *Config) {
 	if v := os.Getenv("RSS_TARGET_DIR"); v != "" {
 		config.Master.TargetDir = v
 	}
-	if v := os.Getenv("RSS_HOST"); v != "" {
-		config.Server.Host = v
+	if v := os.Getenv("RSS_FEED_TITLE"); v != "" {
+		config.Master.FeedTitle = v
+	}
+	if v := os.Getenv("RSS_FEED_DESCRIPTION"); v != "" {
+		config.Master.FeedDescription = v
 	}
 	if v := os.Getenv("RSS_TIMEOUT"); v != "" {
 		timeout, err := strconv.Atoi(v)
