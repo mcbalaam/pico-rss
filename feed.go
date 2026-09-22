@@ -6,11 +6,38 @@ import (
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/gorilla/feeds"
 )
 
-func CollectNotesFromDir(dir string, config *Config) ([]*feeds.Item, error) {
+type Link struct {
+	Href, Rel, Type, Length string
+}
+
+type Author struct {
+	Name, Email string
+}
+
+type Item struct {
+	Title       string
+	Link        *Link
+	Description string
+	Content     string
+	Created     time.Time
+	Updated     time.Time
+	Id          string
+	Author      *Author
+}
+
+type Feed struct {
+	Title       string
+	Link        *Link
+	Description string
+	Author      *Author
+	Created     time.Time
+	Updated     time.Time
+	Items       []*Item
+}
+
+func CollectNotesFromDir(dir string, config *Config) ([]*Item, error) {
 	expanded, err := expandHome(dir)
 	if err != nil {
 		return nil, err
@@ -20,7 +47,7 @@ func CollectNotesFromDir(dir string, config *Config) ([]*feeds.Item, error) {
 		return nil, err
 	}
 
-	var items []*feeds.Item
+	var items []*Item
 	for _, e := range entries {
 		if e.IsDir() {
 			continue
@@ -42,17 +69,17 @@ func CollectNotesFromDir(dir string, config *Config) ([]*feeds.Item, error) {
 	return items, nil
 }
 
-func BuildFeed(config *Config, items []*feeds.Item) *feeds.Feed {
+func BuildFeed(config *Config, items []*Item) *Feed {
 	origin := strings.TrimRight(config.Master.OriginURL, "/")
 
-	author := &feeds.Author{Name: config.Master.AuthorName, Email: config.Master.AuthorEmail}
-	if author.Name == "" && author.Email == "" {
-		author = nil
+	var author *Author
+	if config.Master.AuthorName != "" || config.Master.AuthorEmail != "" {
+		author = &Author{Name: config.Master.AuthorName, Email: config.Master.AuthorEmail}
 	}
 
-	feed := &feeds.Feed{
+	feed := &Feed{
 		Title:       config.Master.FeedTitle,
-		Link:        &feeds.Link{Href: origin},
+		Link:        &Link{Href: origin},
 		Description: config.Master.FeedDescription,
 		Author:      author,
 		Created:     time.Now(),
@@ -74,4 +101,13 @@ func BuildFeed(config *Config, items []*feeds.Item) *feeds.Feed {
 	}
 
 	return feed
+}
+
+func anyTimeFormat(format string, times ...time.Time) string {
+	for _, t := range times {
+		if !t.IsZero() {
+			return t.Format(format)
+		}
+	}
+	return ""
 }

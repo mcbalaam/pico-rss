@@ -1,20 +1,16 @@
 package main
 
 import (
-	"bytes"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 	"unicode/utf8"
-
-	"github.com/gorilla/feeds"
-	"github.com/yuin/goldmark"
 )
 
 const DEFAULT_NOTE_DIR = "~/notes"
 
-// Only supported date format: dd.mm.yyyy (e.g. 22.09.2026).
+// the only supported date format is dd.mm.yyyy (e.g. 22.09.2026)
 const noteDateLayout = "02.01.2006"
 
 func expandHome(path string) (string, error) {
@@ -44,7 +40,7 @@ func isEmptyLine(s string) bool {
 	return strings.TrimSpace(s) == ""
 }
 
-// stripMarkdownInline removes a minimal set of inline markers for description preview.
+// stripMarkdownInline removes a minimal set of inline markers for description preview
 func stripMarkdownInline(s string) string {
 	s = strings.TrimSpace(s)
 	replacer := strings.NewReplacer(
@@ -52,9 +48,9 @@ func stripMarkdownInline(s string) string {
 		"`", "",
 	)
 	s = replacer.Replace(s)
-	// Drop leading heading / quote / list markers.
+	// drop leading heading/quote/list markers
 	s = strings.TrimLeft(s, "#>*-+ \t")
-	// Unwrap [text](url) -> text, ![alt](url) -> alt.
+	// unwrap [text](url) -> text, ![alt](url) -> alt
 	for {
 		open := strings.Index(s, "[")
 		close := strings.Index(s, "]")
@@ -89,8 +85,8 @@ func truncateRunes(s string, max int) string {
 // next non-empty line: date in dd.mm.yyyy (fallback: ModTime)
 // next paragraph: description (first non-empty paragraph, ~300 runes)
 // link: origin_url + "/" + slug (slug = filename without .md)
-// content: full markdown minus title/date lines, rendered to HTML.
-func GetNote(path string, config *Config) (*feeds.Item, error) {
+// content: full markdown minus title/date lines, rendered to HTML
+func GetNote(path string, config *Config) (*Item, error) {
 	expandedPath, err := expandHome(path)
 	if err != nil {
 		return nil, err
@@ -181,11 +177,7 @@ func GetNote(path string, config *Config) (*feeds.Item, error) {
 	}
 	body := strings.TrimSpace(strings.Join(bodyLines, "\n"))
 
-	var buf bytes.Buffer
-	if err := goldmark.Convert([]byte(body), &buf); err != nil {
-		return nil, err
-	}
-	htmlContent := buf.String()
+	htmlContent := markdownToHTML(body)
 
 	origin := strings.TrimRight(config.Master.OriginURL, "/")
 	link := origin + "/" + slug
@@ -195,9 +187,9 @@ func GetNote(path string, config *Config) (*feeds.Item, error) {
 		updated = dateVal
 	}
 
-	return &feeds.Item{
+	return &Item{
 		Title:       title,
-		Link:        &feeds.Link{Href: link},
+		Link:        &Link{Href: link},
 		Description: description,
 		Content:     htmlContent,
 		Created:     dateVal,
