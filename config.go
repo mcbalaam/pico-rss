@@ -4,56 +4,35 @@ import (
 	"log"
 	"os"
 	"strconv"
-
-	"github.com/BurntSushi/toml"
 )
 
 type Config struct {
-	Master MasterConfig `toml:"master"`
-	Server ServerConfig `toml:"server"`
+	Master MasterConfig
+	Server ServerConfig
 }
 
 type MasterConfig struct {
-	AuthorUsername string `toml:"author_username"`
-	OriginURL      string `toml:"origin_url"`
-	TargetDir      string `toml:"target_dir"`
+	AuthorUsername string
+	OriginURL      string
+	TargetDir      string
 }
 
 type ServerConfig struct {
-	Host    string `toml:"host"`
-	Port    int    `toml:"port"`
-	Timeout int    `toml:"timeout"`
+	Host    string
+	Port    int
+	Timeout int
 }
 
 func GetConfig() Config {
 	var config Config
 
-	// Defaults for local run and for pure-ENV (docker) mode.
-	config.Master.AuthorUsername = "mcbalaam"
-	config.Master.OriginURL = "https://rss.mcblm.xyz"
+	// Defaults when ENV is empty
+	config.Master.AuthorUsername = "username"
+	config.Master.OriginURL = "https://rss.example.com"
 	config.Master.TargetDir = "~/rss-notes"
 	config.Server.Host = "127.0.0.1"
 	config.Server.Port = 8066
 	config.Server.Timeout = 10
-
-	// CONFIG_PATH lets docker/compose point at a mounted file.
-	// Default keeps backward compat with ./config.toml.
-	configPath := os.Getenv("CONFIG_PATH")
-	if configPath == "" {
-		configPath = "config.toml"
-	}
-
-	if _, err := os.Stat(configPath); err == nil {
-		if _, err := toml.DecodeFile(configPath, &config); err != nil {
-			log.Fatal(err)
-		}
-	} else if configPath != "config.toml" || !os.IsNotExist(err) {
-		// Explicit path that is missing/unreadable -> fail loud.
-		// Default path missing -> fine, fall through to defaults+ENV.
-		if os.Getenv("CONFIG_PATH") != "" {
-			log.Fatalf("config file %q: %v", configPath, err)
-		}
-	}
 
 	applyEnvOverrides(&config)
 
