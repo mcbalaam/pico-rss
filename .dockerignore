@@ -1,0 +1,5 @@
+go-rss
+go-rss-test
+rss-notes/
+*.md
+.git/

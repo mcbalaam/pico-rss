@@ -1,0 +1,16 @@
+services:
+  go-rss:
+    build: .
+    # NOTES_DIR must be an absolute host path, e.g. NOTES_DIR=/home/user/my-rss-notes
+    volumes:
+      - "${NOTES_DIR}:/data:ro"
+    environment:
+      RSS_AUTHOR_USERNAME: "${RSS_AUTHOR_USERNAME}"
+      RSS_ORIGIN_URL: "${RSS_ORIGIN_URL}"
+      RSS_TARGET_DIR: /data
+      RSS_HOST: "0.0.0.0"
+      RSS_PORT: "${RSS_PORT}"
+      RSS_TIMEOUT: "${RSS_TIMEOUT}"
+    ports:
+      - "${RSS_PORT}:${RSS_PORT}"
+    restart: unless-stopped
