@@ -9,7 +9,7 @@ You can...
 - create and configure an `.env` file and  use the following `compose.yml` to pull the image from Dockerhub;
 ```
 services:
-  go-rss:
+  pico-rss:
     image: mcbalaam/pico-rss:latest
     ports:
       - "${RSS_PORT:-8080}:8080"
