@@ -6,7 +6,16 @@ pico-rss is a very minimal personal RSS feed server that serves `.md` files usin
 
 You can...
 - clone the project, reconfigure [compose.yml](https://github.com/mcbalaam/pico-rss/blob/master/compose.yml) and run `docker compose up -d`;
-- only grab [compose.yml](https://github.com/mcbalaam/pico-rss/blob/master/compose.yml) and pull the image from Dockerhub;
+- create and configure an `.env` file and  use the following `compose.yml` to pull the image from Dockerhub;
+```
+services:
+  pico-rss:
+    image: mcbalaam/pico-rss:latest
+    ports:
+      - "${RSS_PORT:-8080}:8080"
+    volumes:
+      - "${NOTES_DIR}:/data:ro"
+```
 - pull it directly from Dockerhub:
 
 ```sh
