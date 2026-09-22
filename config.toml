@@ -1,0 +1,9 @@
+[master]
+author_username = "mcbalaam"
+origin_url = "https://rss.mcblm.xyz"
+target_dir = "~/rss-notes"
+
+[server]
+host = "127.0.0.1"
+port = 8066
+timeout = 10
